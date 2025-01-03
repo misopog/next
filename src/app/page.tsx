@@ -29,11 +29,11 @@ export default function Main() {
 
 
   return (
-    <div className="flex flex-col items-center justify-center content-center bg-blur rounded-3xl p-8 w-full max-w-md mx-auto">
+    <div className="flex flex-col items-center justify-center content-center bg-blur rounded-3xl p-8 w-full max-w-md mx-auto fade-in-bottom">
       <div className="flex flex-col items-center gap-6 mb-12">
         <div className="relative profile-glow">
           <Image
-            src="/profile.jpg?height=120&width=120"
+            src="./profile.jpg?height=120&width=120"
             alt="pfp"
             width={120}
             height={120}
@@ -50,7 +50,7 @@ export default function Main() {
             className="social-icon hover:scale-110"
           >
             <Image
-              src="/youtube.svg?height=24&width=24"
+              src="./youtube.svg?height=24&width=24"
               alt="youtube"
               width={24}
               height={24}
@@ -61,7 +61,7 @@ export default function Main() {
             className="social-icon hover:scale-110"
           >
             <Image
-              src="/spotify.svg?height=24&width=24"
+              src="./spotify.svg?height=24&width=24"
               alt="spotify"
               width={24}
               height={24}
@@ -69,8 +69,16 @@ export default function Main() {
           </Link>
           <Link href="https://www.last.fm/user/misopog" className="social-icon hover:scale-110">
             <Image
-              src="/lastfm.svg?height=24&width=24"
+              src="./lastfm.svg?height=24&width=24"
               alt="lastfm"
+              width={24}
+              height={24}
+            />
+          </Link>
+          <Link href="https://github.com/misopog" className="social-icon hover:scale-110">
+            <Image
+              src="./github.svg?height=24&width=24"
+              alt="github"
               width={24}
               height={24}
             />
@@ -80,7 +88,7 @@ export default function Main() {
             className="social-icon hover:scale-110"
           >
             <Image
-              src="/steam.svg?height=24&width=24"
+              src="./steam.svg?height=24&width=24"
               alt="steam"
               width={24}
               height={24}
@@ -106,7 +114,7 @@ export default function Main() {
       <a href="https://discord.com/users/967755284984524811">
         <div className="mt-8 flex justify-center items-center gap-3 hover:scale-110 ">
           <Image
-            src="/profile.jpg?height=48&width=48"
+            src="./profile.jpg?height=48&width=48"
             alt="discord logo"
             width={48}
             height={48}
