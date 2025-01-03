@@ -46,6 +46,17 @@ export default function Main() {
         </div>
         <div className="flex gap-4">
           <Link
+            href="https://www.youtube.com/@majkenxd"
+            className="social-icon hover:scale-110"
+          >
+            <Image
+              src="/youtube.svg?height=24&width=24"
+              alt="youtube"
+              width={24}
+              height={24}
+            />
+          </Link>
+          <Link
             href="https://open.spotify.com/user/wcqybgexqdu4kspw40itcan8x?si=ab717457655a46e3"
             className="social-icon hover:scale-110"
           >
