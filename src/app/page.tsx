@@ -1,14 +1,39 @@
+"use client"
+
 import { Book, LinkIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-export default function BioPage() {
+export default function Main() {
+  const [spotifyStatus, setSpotifyStatus] = useState("loading...");
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch("https://api.lanyard.rest/v1/users/967755284984524811");
+        const { data } = await res.json();
+        if (data.listening_to_spotify) {
+          const song = `${data.spotify.artist} - ${data.spotify.song} `;
+          setSpotifyStatus(song);
+        } else {
+          setSpotifyStatus("professional dumbass");
+        }
+      } catch (error) {
+        console.error("Error fetching Spotify data:", error);
+        setSpotifyStatus("Error loading Spotify status");
+      }
+    }
+
+    fetchData();
+  }, []);
+
+
   return (
     <div className="flex flex-col items-center justify-center content-center bg-blur rounded-3xl p-8 w-full max-w-md mx-auto">
       <div className="flex flex-col items-center gap-6 mb-12">
         <div className="relative profile-glow">
           <Image
-            src="/profile.jpg?height=120&width=120"
+            src="https://api.lanyard.rest/967755284984524811.png?height=120&width=120"
             alt="pfp"
             width={120}
             height={120}
@@ -17,7 +42,7 @@ export default function BioPage() {
         </div>
         <div className="text-center">
           <h1 className="text-2xl font-medium mb-1">misopog</h1>
-          <p className="text-neutral-400">professional dumbass</p>
+          <p className="text-neutral-400">{spotifyStatus}</p>
         </div>
         <div className="flex gap-4">
           <Link
@@ -68,13 +93,12 @@ export default function BioPage() {
       </div>
 
       <a href="https://discord.com/users/967755284984524811">
-        <div className="mt-8 flex items-center gap-3 hover:scale-110">
+        <div className="mt-8 flex justify-center items-center gap-3 hover:scale-110 ">
           <Image
-            src="/profile.jpg?height=48&width=48"
-            alt="discord pfp"
+            src="https://api.lanyard.rest/967755284984524811.png?height=48&width=48"
+            alt="discord logo"
             width={48}
             height={48}
-            className="rounded-full"
           />
           <p className="text-sm text-neutral-400">@misopog</p>
         </div>
