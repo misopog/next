@@ -6,21 +6,27 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Main() {
-  const [spotifyStatus, setSpotifyStatus] = useState("loading...");
+  const [lastfmStatus, setLastfmStatus] = useState("loading...");
+  
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch("https://api.lanyard.rest/v1/users/967755284984524811");
-        const { data } = await res.json();
-        if (data.listening_to_spotify) {
-          const song = `${data.spotify.artist} - ${data.spotify.song} `;
-          setSpotifyStatus(song);
+        const res = await fetch("https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=misopog&api_key=abef0fe1fb2be45bc1736aa615dc87fb&format=json");
+        const { recenttracks } = await res.json();
+        if (recenttracks.track && recenttracks.track.length > 0) {
+          const track = recenttracks.track[0];
+          if (track["@attr"] && track["@attr"].nowplaying) {
+            const song = `${track.artist["#text"]} - ${track.name}`;
+            setLastfmStatus(song);
+          } else {
+            setLastfmStatus("No song currently playing");
+          }
         } else {
-          setSpotifyStatus("professional dumbass");
+          setLastfmStatus("No recent tracks available");
         }
       } catch (error) {
-        console.error("Error fetching Spotify data:", error);
-        setSpotifyStatus("Error loading Spotify status");
+        console.error("Error fetching Last.fm data:", error);
+        setLastfmStatus("Error loading Last.fm status");
       }
     }
 
@@ -42,7 +48,7 @@ export default function Main() {
         </div>
         <div className="text-center">
           <h1 className="text-2xl font-medium mb-1">misopog</h1>
-          <p className="text-neutral-400">{spotifyStatus}</p>
+          <p className="text-neutral-400">{lastfmStatus}</p>
         </div>
         <div className="flex gap-4">
           <Link
