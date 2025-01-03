@@ -33,7 +33,7 @@ export default function Main() {
       <div className="flex flex-col items-center gap-6 mb-12">
         <div className="relative profile-glow">
           <Image
-            src="https://api.lanyard.rest/967755284984524811.png?height=120&width=120"
+            src="/profile.jpg/?height=120&width=120"
             alt="pfp"
             width={120}
             height={120}
@@ -95,10 +95,11 @@ export default function Main() {
       <a href="https://discord.com/users/967755284984524811">
         <div className="mt-8 flex justify-center items-center gap-3 hover:scale-110 ">
           <Image
-            src="https://api.lanyard.rest/967755284984524811.png?height=48&width=48"
+            src="/profile.jpg/?height=48&width=48"
             alt="discord logo"
             width={48}
             height={48}
+            className="rounded-full"
           />
           <p className="text-sm text-neutral-400">@misopog</p>
         </div>
