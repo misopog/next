@@ -19,14 +19,14 @@ export default function Main() {
             const song = `${track.artist["#text"]} - ${track.name}`;
             setLastfmStatus(song);
           } else {
-            setLastfmStatus("No song currently playing");
+            setLastfmStatus("no song is currently playing");
           }
         } else {
-          setLastfmStatus("No recent tracks available");
+          setLastfmStatus("lastfm api error (no availabe last tracks)");
         }
       } catch (error) {
-        console.error("Error fetching Last.fm data:", error);
-        setLastfmStatus("Error loading Last.fm status");
+        console.error("error fetching Last.fm data:", error);
+        setLastfmStatus("error loading Last.fm status");
       }
     }
 
