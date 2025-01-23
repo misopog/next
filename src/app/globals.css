@@ -9,15 +9,6 @@
   background-repeat: no-repeat;
 }
 
-
-.bg-radial-gradient {
-  background-image: radial-gradient(
-    circle at center,
-    rgba(255, 255, 255, 0.05) 0%,
-    transparent 70%
-  );
-}
-
 .bg-blur {
   backdrop-filter: blur(12px);
   background: rgba(0, 0, 0, 0.4);
@@ -86,32 +77,6 @@ body {
     transform: translateY(0);
   }
 }
-
-.view-count {
-  animation: fadeIn 0.5s ease-out;
-}
-
-
-.profile-glow {
-  position: relative;
-}
-
-.profile-glow::after {
-  content: '';
-  position: absolute;
-  top: -5px;
-  left: -5px;
-  right: -5px;
-  bottom: -5px;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at center,
-    rgba(255, 255, 255, 0.2) 0%,
-    transparent 70%
-  );
-  z-index: -1;
-}
-
 
 .link-button {
   position: relative;

@@ -28,14 +28,14 @@ export default function Main() {
             const song = `${lastPlayedTrack.artist["#text"]} - ${lastPlayedTrack.name}`;
             setLastfmStatus(`${song}`);
           } else {
-            setLastfmStatus("No songs currently playing or recently played");
+            setLastfmStatus("no songs currently playing or recently played");
           }
         } else {
-          setLastfmStatus("Last.fm API error (no available tracks)");
+          setLastfmStatus("last.fm API error (no available tracks)");
         }
       } catch (error) {
-        console.error("Error fetching Last.fm data:", error);
-        setLastfmStatus("Error loading Last.fm status");
+        console.error("error fetching Last.fm data:", error);
+        setLastfmStatus("error loading Last.fm status");
       }
     }
 
@@ -56,7 +56,8 @@ export default function Main() {
         </div>
         <div className="text-center">
           <h1 className="text-2xl font-medium mb-1">misopog</h1>
-          <p className="text-neutral-400">{lastfmStatus}</p>
+          <p className="text-neutral-400">professional schizoposter</p>
+          <p className="text-sm text-neutral-400">{lastfmStatus}</p>
         </div>
         <div className="flex gap-4">
           <Link
