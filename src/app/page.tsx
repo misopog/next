@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+
 export default function Main() {
   const [lastfmStatus, setLastfmStatus] = useState("loading...");
 
@@ -41,8 +42,6 @@ export default function Main() {
     fetchData();
   }, []);
 
-
-
   return (
     <div className="flex flex-col items-center justify-center content-center bg-blur rounded-3xl p-8 w-full max-w-md mx-auto fade-in-bottom">
       <div className="flex flex-col items-center gap-6 mb-12">
@@ -67,6 +66,28 @@ export default function Main() {
             <Image
               src="./youtube.svg?height=24&width=24"
               alt="youtube"
+              width={24}
+              height={24}
+            />
+          </Link>
+          <Link
+            href="https://x.com/@misopog"
+            className="social-icon hover:scale-110"
+          >
+            <Image
+              src="./x.svg?height=24&width=24"
+              alt="x"
+              width={24}
+              height={24}
+            />
+          </Link>
+          <Link
+            href="https://t.me/misopog"
+            className="social-icon hover:scale-110"
+          >
+            <Image
+              src="./telegram?height=24&width=24"
+              alt="tg"
               width={24}
               height={24}
             />
