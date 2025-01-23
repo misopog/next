@@ -25,7 +25,7 @@ export default function Main() {
             setLastfmStatus(song);
           } else if (lastPlayedTrack) {
             const song = `${lastPlayedTrack.artist["#text"]} - ${lastPlayedTrack.name}`;
-            setLastfmStatus(`Last played: ${song}`);
+            setLastfmStatus(`${song}`);
           } else {
             setLastfmStatus("No songs currently playing or recently played");
           }
