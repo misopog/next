@@ -7,31 +7,40 @@ import { useEffect, useState } from "react";
 
 export default function Main() {
   const [lastfmStatus, setLastfmStatus] = useState("loading...");
-  
+
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch("https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=misopog&api_key=abef0fe1fb2be45bc1736aa615dc87fb&format=json");
+        const res = await fetch(
+          "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=misopog&api_key=abef0fe1fb2be45bc1736aa615dc87fb&format=json"
+        );
         const { recenttracks } = await res.json();
+
         if (recenttracks.track && recenttracks.track.length > 0) {
-          const track = recenttracks.track[0];
-          if (track["@attr"] && track["@attr"].nowplaying) {
-            const song = `${track.artist["#text"]} - ${track.name}`;
+          const nowPlayingTrack = recenttracks.track[0]; // now playing (index 0)
+          const lastPlayedTrack = recenttracks.track[1]; // last playing if nothing is playing (index 1)
+
+          if (nowPlayingTrack["@attr"] && nowPlayingTrack["@attr"].nowplaying) {
+            const song = `${nowPlayingTrack.artist["#text"]} - ${nowPlayingTrack.name}`;
             setLastfmStatus(song);
+          } else if (lastPlayedTrack) {
+            const song = `${lastPlayedTrack.artist["#text"]} - ${lastPlayedTrack.name}`;
+            setLastfmStatus(`Last played: ${song}`);
           } else {
-            setLastfmStatus("no song is currently playing");
+            setLastfmStatus("No songs currently playing or recently played");
           }
         } else {
-          setLastfmStatus("lastfm api error (no availabe last tracks)");
+          setLastfmStatus("Last.fm API error (no available tracks)");
         }
       } catch (error) {
-        console.error("error fetching Last.fm data:", error);
-        setLastfmStatus("error loading Last.fm status");
+        console.error("Error fetching Last.fm data:", error);
+        setLastfmStatus("Error loading Last.fm status");
       }
     }
 
     fetchData();
   }, []);
+
 
 
   return (
