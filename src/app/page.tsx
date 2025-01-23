@@ -86,7 +86,7 @@ export default function Main() {
             className="social-icon hover:scale-110"
           >
             <Image
-              src="./telegram?height=24&width=24"
+              src="./telegram.svg?height=24&width=24"
               alt="tg"
               width={24}
               height={24}
