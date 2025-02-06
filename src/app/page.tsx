@@ -18,28 +18,33 @@ export default function Main() {
         const { recenttracks } = await res.json();
 
         if (recenttracks.track && recenttracks.track.length > 0) {
-          const nowPlayingTrack = recenttracks.track[0]; // now playing (index 0)
-          const lastPlayedTrack = recenttracks.track[1]; // last playing if nothing is playing (index 1)
+          const nowPlayingTrack = recenttracks.track[0];
+          const lastPlayedTrack = recenttracks.track[1] || null; 
 
-          if (nowPlayingTrack["@attr"] && nowPlayingTrack["@attr"].nowplaying) {
-            const song = `${nowPlayingTrack.artist["#text"]} - ${nowPlayingTrack.name}`;
-            setLastfmStatus(song);
+          if (nowPlayingTrack["@attr"]?.nowplaying) {
+            setLastfmStatus(
+              `${nowPlayingTrack.artist["#text"]} - ${nowPlayingTrack.name}`
+            );
           } else if (lastPlayedTrack) {
-            const song = `${lastPlayedTrack.artist["#text"]} - ${lastPlayedTrack.name}`;
-            setLastfmStatus(`${song}`);
+            setLastfmStatus(
+              `${lastPlayedTrack.artist["#text"]} - ${lastPlayedTrack.name}`
+            );
           } else {
-            setLastfmStatus("no songs currently playing or recently played");
+            setLastfmStatus("No songs currently playing or recently played");
           }
         } else {
-          setLastfmStatus("last.fm API error (no available tracks)");
+          setLastfmStatus("Last.fm API error (no available tracks)");
         }
       } catch (error) {
-        console.error("error fetching Last.fm data:", error);
-        setLastfmStatus("error loading Last.fm status");
+        console.error("Error fetching Last.fm data:", error);
+        setLastfmStatus("Error loading Last.fm status");
       }
     }
 
     fetchData();
+
+    const interval = setInterval(fetchData, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
