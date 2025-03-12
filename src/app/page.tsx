@@ -7,13 +7,10 @@ import { useEffect, useState } from "react";
 import Head from 'next/head';
 
 const backgroundImages = [1, 2, 3, 4, 5].map((num) => `/backgrounds/${num}.webp`);
-
-// Get random background at render time instead of in useEffect
 const getRandomBackground = () => backgroundImages[Math.floor(Math.random() * backgroundImages.length)];
 
 export default function Main() {
   const [lastfmStatus, setLastfmStatus] = useState("loading...");
-  // Initialize with random background immediately
   const [backgroundImage] = useState(getRandomBackground());
 
   useEffect(() => {
