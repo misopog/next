@@ -6,50 +6,99 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import Head from 'next/head';
 
-const backgroundImages = [1, 2, 3, 4, 5].map((num) => `/backgrounds/${num}.webp`);
+const CONFIG = {
+  animation: {
+    frameInterval: 100,
+  },
+  lastfm: {
+    refreshInterval: 30000,
+    endpoint: "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=misopog&api_key=abef0fe1fb2be45bc1736aa615dc87fb&format=json",
+  },
+  assets: {
+    backgrounds: [1, 2, 3, 4, 5].map((num) => `/backgrounds/${num}.webp`),
+  },
+} as const;
 
-export default function Main() {
-  const [lastfmStatus, setLastfmStatus] = useState("loading...");
-  const [backgroundImage, setBackgroundImage] = useState("");
+interface AnimationState {
+  frames: string[];
+  currentIndex: number;
+}
+
+const useAnimatedDocumentTitle = (text: string): void => {
+  const initializeAnimationState = (): AnimationState => ({
+    frames: ['|', '/', '-', '\\'],
+    currentIndex: 0
+  });
 
   useEffect(() => {
-    const randomBg = backgroundImages[Math.floor(Math.random() * backgroundImages.length)];
-    setBackgroundImage(randomBg);
+    let currentLength = 1;
+    const animationState = initializeAnimationState();
 
-    async function fetchData() {
-      try {
-        const res = await fetch(
-          "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=misopog&api_key=abef0fe1fb2be45bc1736aa615dc87fb&format=json"
-        );
-        const { recenttracks } = await res.json();
-
-        if (recenttracks.track && recenttracks.track.length > 0) {
-          const currentTrack = recenttracks.track[0];
-
-          if (currentTrack["@attr"]?.nowplaying) {
-            setLastfmStatus(`${currentTrack.artist["#text"]} - ${currentTrack.name}`);
-          } else {
-            setLastfmStatus(`${currentTrack.artist["#text"]} - ${currentTrack.name}`);
-          }
-        } else {
-          setLastfmStatus("Last.fm API error (no available tracks)");
-        }
-      } catch (error) {
-        console.error("Error fetching Last.fm data:", error);
-        setLastfmStatus("Error loading Last.fm status");
+    const renderNextFrame = () => {
+      const visibleText = text.slice(0, currentLength);
+      document.title = `${visibleText} ${animationState.frames[animationState.currentIndex]}`;
+      
+      animationState.currentIndex = (animationState.currentIndex + 1) % animationState.frames.length;
+      
+      if (animationState.currentIndex === 0) {
+        currentLength = currentLength >= text.length ? 1 : currentLength + 1;
       }
+    };
+
+    const animationInterval = setInterval(renderNextFrame, CONFIG.animation.frameInterval);
+    return () => clearInterval(animationInterval);
+  }, [text]);
+};
+
+const useNowPlayingStatus = (): string => {
+  const [status, setStatus] = useState("loading...");
+
+  const fetchTrackData = async (): Promise<void> => {
+    try {
+      const response = await fetch(CONFIG.lastfm.endpoint);
+      const { recenttracks } = await response.json();
+
+      if (recenttracks?.track?.[0]) {
+        const track = recenttracks.track[0];
+        setStatus(`${track.artist["#text"]} - ${track.name}`);
+      } else {
+        setStatus("No active playback");
+      }
+    } catch (error) {
+      console.error("LastFM API Error:", error);
+      setStatus("Playback status unavailable");
     }
+  };
 
-    fetchData();
-
-    const interval = setInterval(fetchData, 30000);
-    return () => clearInterval(interval);
+  useEffect(() => {
+    fetchTrackData();
+    const updateInterval = setInterval(fetchTrackData, CONFIG.lastfm.refreshInterval);
+    return () => clearInterval(updateInterval);
   }, []);
+
+  return status;
+};
+
+const useBackgroundRotation = (): string => {
+  const [background, setBackground] = useState("");
+
+  useEffect(() => {
+    const randomIndex = Math.floor(Math.random() * CONFIG.assets.backgrounds.length);
+    setBackground(CONFIG.assets.backgrounds[randomIndex]);
+  }, []);
+
+  return background;
+};
+
+export default function Main() {
+  const nowPlaying = useNowPlayingStatus();
+  const backgroundImage = useBackgroundRotation();
+  useAnimatedDocumentTitle('misopog');
 
   return (
     <>
       <Head>
-        {backgroundImages.map((bg) => (
+        {CONFIG.assets.backgrounds.map((bg: string) => (
           <link key={bg} rel="preload" as="image" href={bg} />
         ))}
       </Head>
@@ -77,7 +126,7 @@ export default function Main() {
             <div className="text-center">
               <h1 className="text-2xl font-medium mb-1">misopog</h1>
               <p className="text-neutral-400">professional schizoposter</p>
-              <p className="text-sm text-neutral-400">{lastfmStatus}</p>
+              <p className="text-sm text-neutral-400">{nowPlaying}</p>
             </div>
             <div className="flex gap-4">
               <Link
