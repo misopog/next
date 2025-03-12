@@ -46,16 +46,17 @@ export default function Main() {
   }, []);
 
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center p-4">
+    <div className="fixed inset-0 flex items-center justify-center">
       <Image
         src={backgroundImage}
         alt="bg"
         fill
         priority
-        className="object-cover z-[-1]"
+        sizes="100vw"
+        className="object-cover opacity-60"
         quality={100}
       />
-      <div className="flex flex-col items-center justify-center content-center bg-blur rounded-3xl p-8 w-full max-w-md mx-auto fade-in-bottom">
+      <div className="relative flex flex-col items-center justify-center content-center bg-blur rounded-3xl p-8 w-full max-w-md mx-4 fade-in-bottom">
         <div className="flex flex-col items-center gap-6 mb-12">
           <div className="relative profile-glow">
             <Image
