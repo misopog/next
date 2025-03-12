@@ -6,18 +6,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import Head from 'next/head';
 
-const CONFIG = {
-  animation: {
-    frameInterval: 100,
-  },
-  lastfm: {
-    refreshInterval: 30000,
-    endpoint: "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=misopog&api_key=abef0fe1fb2be45bc1736aa615dc87fb&format=json",
-  },
-  assets: {
-    backgrounds: [1, 2, 3, 4, 5].map((num) => `/backgrounds/${num}.webp`),
-  },
-} as const;
+const ANIMATION_INTERVAL = 100;
+const LASTFM_REFRESH_INTERVAL = 30000;
+const LASTFM_ENDPOINT = "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=misopog&api_key=abef0fe1fb2be45bc1736aa615dc87fb&format=json";
+const BACKGROUND_ASSETS = [1, 2, 3, 4, 5].map((num) => `/backgrounds/${num}.webp`);
 
 interface AnimationState {
   frames: string[];
@@ -45,7 +37,7 @@ const useAnimatedDocumentTitle = (text: string): void => {
       }
     };
 
-    const animationInterval = setInterval(renderNextFrame, CONFIG.animation.frameInterval);
+    const animationInterval = setInterval(renderNextFrame, ANIMATION_INTERVAL);
     return () => clearInterval(animationInterval);
   }, [text]);
 };
@@ -55,7 +47,7 @@ const useNowPlayingStatus = (): string => {
 
   const fetchTrackData = async (): Promise<void> => {
     try {
-      const response = await fetch(CONFIG.lastfm.endpoint);
+      const response = await fetch(LASTFM_ENDPOINT);
       const { recenttracks } = await response.json();
 
       if (recenttracks?.track?.[0]) {
@@ -72,7 +64,7 @@ const useNowPlayingStatus = (): string => {
 
   useEffect(() => {
     fetchTrackData();
-    const updateInterval = setInterval(fetchTrackData, CONFIG.lastfm.refreshInterval);
+    const updateInterval = setInterval(fetchTrackData, LASTFM_REFRESH_INTERVAL);
     return () => clearInterval(updateInterval);
   }, []);
 
@@ -83,8 +75,8 @@ const useBackgroundRotation = (): string => {
   const [background, setBackground] = useState("");
 
   useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * CONFIG.assets.backgrounds.length);
-    setBackground(CONFIG.assets.backgrounds[randomIndex]);
+    const randomIndex = Math.floor(Math.random() * BACKGROUND_ASSETS.length);
+    setBackground(BACKGROUND_ASSETS[randomIndex]);
   }, []);
 
   return background;
@@ -98,7 +90,7 @@ export default function Main() {
   return (
     <>
       <Head>
-        {CONFIG.assets.backgrounds.map((bg: string) => (
+        {BACKGROUND_ASSETS.map((bg: string) => (
           <link key={bg} rel="preload" as="image" href={bg} />
         ))}
       </Head>
