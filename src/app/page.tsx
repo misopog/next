@@ -7,13 +7,15 @@ import { useEffect, useState } from "react";
 import Head from 'next/head';
 
 const backgroundImages = [1, 2, 3, 4, 5].map((num) => `/backgrounds/${num}.webp`);
-const getRandomBackground = () => backgroundImages[Math.floor(Math.random() * backgroundImages.length)];
 
 export default function Main() {
   const [lastfmStatus, setLastfmStatus] = useState("loading...");
-  const [backgroundImage] = useState(getRandomBackground());
+  const [backgroundImage, setBackgroundImage] = useState("");
 
   useEffect(() => {
+    const randomBg = backgroundImages[Math.floor(Math.random() * backgroundImages.length)];
+    setBackgroundImage(randomBg);
+
     async function fetchData() {
       try {
         const res = await fetch(
