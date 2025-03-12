@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import Head from 'next/head';
 
 const ANIMATION_INTERVAL = 100;
-const LASTFM_REFRESH_INTERVAL = 30000;
+const LASTFM_REFRESH_INTERVAL = 50000;
 const LASTFM_ENDPOINT = "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=misopog&api_key=abef0fe1fb2be45bc1736aa615dc87fb&format=json";
 const BACKGROUND_ASSETS = [1, 2, 3, 4, 5].map((num) => `/backgrounds/${num}.webp`);
 
@@ -24,6 +24,7 @@ const useAnimatedDocumentTitle = (text: string): void => {
 
   useEffect(() => {
     let currentLength = 1;
+    let isForward = true;
     const animationState = initializeAnimationState();
 
     const renderNextFrame = () => {
@@ -33,7 +34,21 @@ const useAnimatedDocumentTitle = (text: string): void => {
       animationState.currentIndex = (animationState.currentIndex + 1) % animationState.frames.length;
       
       if (animationState.currentIndex === 0) {
-        currentLength = currentLength >= text.length ? 1 : currentLength + 1;
+        if (isForward) {
+          if (currentLength >= text.length) {
+            isForward = false;
+            currentLength--;
+          } else {
+            currentLength++;
+          }
+        } else {
+          if (currentLength <= 1) {
+            isForward = true;
+            currentLength++;
+          } else {
+            currentLength--;
+          }
+        }
       }
     };
 
