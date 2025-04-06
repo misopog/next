@@ -170,7 +170,7 @@ export default function Main() {
                 />
               </Link>
               <Link
-                href="https://open.spotify.com/user/wcqybgexqdu4kspw40itcan8x?si=ab717457655a46e3"
+                href="https://open.spotify.com/user/31vypzm4tq35a63ljenh3fv6ynoe"
                 className="social-icon hover:scale-110"
               >
                 <Image
