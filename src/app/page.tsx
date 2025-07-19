@@ -1,86 +1,76 @@
 "use client"
-
 import { Book, LinkIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Head from 'next/head';
-
-const ANIMATION_INTERVAL = 100;
-const LASTFM_REFRESH_INTERVAL = 50000;
-const LASTFM_ENDPOINT = "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=misopog&api_key=abef0fe1fb2be45bc1736aa615dc87fb&format=json";
-const BACKGROUND_ASSETS = [1, 2, 3, 4, 5].map((num) => `/backgrounds/${num}.webp`);
-
-interface AnimationState {
-  frames: string[];
-  currentIndex: number;
-}
+const LASTFM = "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=misopog&api_key=abef0fe1fb2be45bc1736aa615dc87fb&format=json";
+const bg = [1, 2, 3, 4, 5].map((num) => `/backgrounds/${num}.webp`);
 
 const useAnimatedDocumentTitle = (text: string): void => {
-  const initializeAnimationState = (): AnimationState => ({
-    frames: ['|', '/', '-', '\\'],
-    currentIndex: 0
-  });
-
   useEffect(() => {
-    let currentLength = 1;
-    let isForward = true;
-    const animationState = initializeAnimationState();
+    const frames = ['|', '/', '-', '\\'];
+    let frameIndex = 0;
+    let length = 1;
+    let forward = true;
 
-    const renderNextFrame = () => {
-      const visibleText = text.slice(0, currentLength);
-      document.title = `${visibleText} ${animationState.frames[animationState.currentIndex]}`;
-      
-      animationState.currentIndex = (animationState.currentIndex + 1) % animationState.frames.length;
-      
-      if (animationState.currentIndex === 0) {
-        if (isForward) {
-          if (currentLength >= text.length) {
-            isForward = false;
-            currentLength--;
+    const animate = () => {
+      document.title = `${text.slice(0, length)} ${frames[frameIndex]}`;
+      frameIndex = (frameIndex + 1) % frames.length;
+
+      if (frameIndex === 0) {
+        if (forward) {
+          if (length < text.length) {
+            length++;
           } else {
-            currentLength++;
+            forward = false;
+            length--;
           }
         } else {
-          if (currentLength <= 1) {
-            isForward = true;
-            currentLength++;
+          if (length > 1) {
+            length--;
           } else {
-            currentLength--;
+            forward = true;
+            length++;
           }
         }
       }
     };
 
-    const animationInterval = setInterval(renderNextFrame, ANIMATION_INTERVAL);
-    return () => clearInterval(animationInterval);
+    const interval = setInterval(animate, 200);
+    return () => clearInterval(interval);
   }, [text]);
 };
 
 const useNowPlayingStatus = (): string => {
   const [status, setStatus] = useState("loading...");
 
-  const fetchTrackData = async (): Promise<void> => {
-    try {
-      const response = await fetch(LASTFM_ENDPOINT);
-      const { recenttracks } = await response.json();
-
-      if (recenttracks?.track?.[0]) {
-        const track = recenttracks.track[0];
-        setStatus(`${track.artist["#text"]} - ${track.name}`);
-      } else {
-        setStatus("No active playback");
-      }
-    } catch (error) {
-      console.error("LastFM API Error:", error);
-      setStatus("Playback status unavailable");
-    }
-  };
-
   useEffect(() => {
-    fetchTrackData();
-    const updateInterval = setInterval(fetchTrackData, LASTFM_REFRESH_INTERVAL);
-    return () => clearInterval(updateInterval);
+    let isMounted = true;
+
+    const fetchNowPlaying = async () => {
+      try {
+        const res = await fetch(LASTFM);
+        const data = await res.json();
+        const track = data?.recenttracks?.track?.[0];
+
+        if (track && isMounted) {
+          setStatus(`${track.artist["#text"]} - ${track.name}`);
+        } else if (isMounted) {
+          setStatus("nothing playing");
+        }
+      } catch (err) {
+        if (isMounted) setStatus("status unavailable");
+      }
+    };
+
+    fetchNowPlaying();
+    const interval = setInterval(fetchNowPlaying, 30000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, []);
 
   return status;
@@ -90,8 +80,8 @@ const useBackgroundRotation = (): string => {
   const [background, setBackground] = useState("");
 
   useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * BACKGROUND_ASSETS.length);
-    setBackground(BACKGROUND_ASSETS[randomIndex]);
+    const idx = Math.floor(Math.random() * bg.length);
+    setBackground(bg[idx]);
   }, []);
 
   return background;
@@ -105,7 +95,7 @@ export default function Main() {
   return (
     <>
       <Head>
-        {BACKGROUND_ASSETS.map((bg: string) => (
+        {bg.map((bg: string) => (
           <link key={bg} rel="preload" as="image" href={bg} />
         ))}
       </Head>
